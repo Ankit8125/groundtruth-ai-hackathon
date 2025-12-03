@@ -232,7 +232,7 @@ const ChatLogViewer = () => {
             </div>
 
             <div className={showFilters ? 'lg:col-span-5' : 'lg:col-span-7'}>
-              <div className="sticky top-24">
+              <div className="sticky top-24 h-[calc(100vh-140px)]">
                 <ConversationDetail
                   conversation={selectedConversation}
                   onClose={() => setSelectedConversation(null)}
