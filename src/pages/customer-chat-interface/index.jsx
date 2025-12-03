@@ -205,6 +205,24 @@ const CustomerChatInterface = () => {
     startNewConversation();
   };
 
+  const handleRateMessage = (messageId, rating) => {
+    // Update local message state
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId ? { ...msg, rating } : msg
+    ));
+
+    // Update conversation satisfaction rating
+    // We'll use a simple logic: Thumbs Up = 5, Thumbs Down = 1
+    // In a real app, you might want to average these or have a separate conversation rating
+    const satisfactionScore = rating === 'up' ? 5 : 1;
+    
+    if (conversationId) {
+      updateConversation(conversationId, {
+        satisfactionRating: satisfactionScore
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <CustomerContextBar />
@@ -225,6 +243,7 @@ const CustomerChatInterface = () => {
                   key={message?.id}
                   message={message}
                   isStreaming={isStreaming && message?.id === messages?.[messages?.length - 1]?.id}
+                  onRate={handleRateMessage}
                 />
               ))}
               {isTyping && <TypingIndicator />}

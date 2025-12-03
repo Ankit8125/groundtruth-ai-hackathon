@@ -90,6 +90,7 @@ export function createConversation(metadata = {}) {
     outlet: metadata?.outlet || 'Online Chat',
     startTime: new Date()?.toISOString(),
     status: 'active',
+    satisfactionRating: 5, // Default to 5 (Like)
     messages: [],
     piiDetections: [],
     ...metadata
