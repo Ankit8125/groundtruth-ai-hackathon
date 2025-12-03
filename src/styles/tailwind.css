@@ -1,0 +1,387 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Primary Colors */
+    --color-primary: #2D5A27; /* green-800 - Deep forest green */
+    --color-primary-foreground: #FFFFFF; /* white */
+    
+    /* Secondary Colors */
+    --color-secondary: #8B4513; /* brown-700 - Warm saddle brown */
+    --color-secondary-foreground: #FFFFFF; /* white */
+    
+    /* Accent Colors */
+    --color-accent: #FF6B35; /* orange-600 - Energetic coral */
+    --color-accent-foreground: #FFFFFF; /* white */
+    
+    /* Background Colors */
+    --color-background: #FDFCFA; /* warmGray-50 - Warm off-white */
+    --color-foreground: #2C2C2C; /* gray-800 - Rich charcoal */
+    
+    /* Surface Colors */
+    --color-card: #F7F5F3; /* warmGray-100 - Subtle warm gray */
+    --color-card-foreground: #2C2C2C; /* gray-800 */
+    
+    --color-popover: #FFFFFF; /* white */
+    --color-popover-foreground: #2C2C2C; /* gray-800 */
+    
+    /* Muted Colors */
+    --color-muted: #F7F5F3; /* warmGray-100 */
+    --color-muted-foreground: #6B6B6B; /* gray-500 - Medium gray */
+    
+    /* Border & Input */
+    --color-border: #E5E3E0; /* warmGray-300 */
+    --color-input: #E5E3E0; /* warmGray-300 */
+    --color-ring: #2D5A27; /* green-800 */
+    
+    /* State Colors */
+    --color-success: #22C55E; /* green-500 - Fresh green */
+    --color-success-foreground: #FFFFFF; /* white */
+    
+    --color-warning: #F59E0B; /* amber-500 */
+    --color-warning-foreground: #FFFFFF; /* white */
+    
+    --color-error: #DC2626; /* red-600 - Clear red */
+    --color-error-foreground: #FFFFFF; /* white */
+    
+    --color-destructive: #DC2626; /* red-600 */
+    --color-destructive-foreground: #FFFFFF; /* white */
+    
+    /* Radius */
+    --radius: 6px;
+  }
+
+  .dark {
+    /* Primary Colors */
+    --color-primary: #3D7A35; /* green-700 - Lighter forest green for dark mode */
+    --color-primary-foreground: #FFFFFF; /* white */
+    
+    /* Secondary Colors */
+    --color-secondary: #A0522D; /* brown-600 - Lighter saddle brown */
+    --color-secondary-foreground: #FFFFFF; /* white */
+    
+    /* Accent Colors */
+    --color-accent: #FF7F50; /* coral - Brighter coral for visibility */
+    --color-accent-foreground: #1A1A1A; /* gray-900 */
+    
+    /* Background Colors */
+    --color-background: #1A1A1A; /* gray-900 - Dark background */
+    --color-foreground: #E5E5E5; /* gray-200 - Light text */
+    
+    /* Surface Colors */
+    --color-card: #262626; /* gray-800 - Elevated surface */
+    --color-card-foreground: #E5E5E5; /* gray-200 */
+    
+    --color-popover: #262626; /* gray-800 */
+    --color-popover-foreground: #E5E5E5; /* gray-200 */
+    
+    /* Muted Colors */
+    --color-muted: #333333; /* gray-700 */
+    --color-muted-foreground: #A3A3A3; /* gray-400 */
+    
+    /* Border & Input */
+    --color-border: #404040; /* gray-700 */
+    --color-input: #404040; /* gray-700 */
+    --color-ring: #3D7A35; /* green-700 */
+    
+    /* State Colors */
+    --color-success: #22C55E; /* green-500 */
+    --color-success-foreground: #FFFFFF; /* white */
+    
+    --color-warning: #F59E0B; /* amber-500 */
+    --color-warning-foreground: #1A1A1A; /* gray-900 */
+    
+    --color-error: #EF4444; /* red-500 - Brighter red for visibility */
+    --color-error-foreground: #FFFFFF; /* white */
+    
+    --color-destructive: #EF4444; /* red-500 */
+    --color-destructive-foreground: #FFFFFF; /* white */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
+}
+
+@layer components {
+  /* Customer Context Bar Styles */
+.customer-context-bar  {
+    @apply fixed top-0 left-0 right-0 z-40;
+    @apply backdrop-blur-sm;
+    @apply border-b border-border;
+    @apply px-4 py-3;
+    @apply flex items-center justify-between;
+    box-shadow: 0 1px 3px rgba(45, 90, 39, 0.1);
+  }
+
+  .customer-context-bar-logo {
+    @apply flex items-center gap-2;
+  }
+.customer-context-bar-logo-icon  {
+    @apply w-8 h-8 rounded-lg;
+    @apply flex items-center justify-center;
+    @apply transition-transform duration-200;
+  }
+
+  .customer-context-bar-logo-icon:hover {
+    @apply scale-105;
+  }
+
+  .customer-context-bar-actions {
+    @apply flex items-center gap-2;
+  }
+
+  /* Administrative Sidebar Styles */
+  .admin-sidebar {
+    @apply fixed top-0 left-0 h-full z-50;
+    @apply bg-card border-r border-border;
+    @apply transition-all duration-300 ease-out;
+    width: 280px;
+  }
+
+  .admin-sidebar.collapsed {
+    width: 80px;
+  }
+
+  .admin-sidebar-header {
+    @apply p-4 border-b border-border;
+    @apply flex items-center justify-between;
+  }
+.admin-sidebar-logo  {
+    @apply w-10 h-10 rounded-lg;
+    @apply flex items-center justify-center;
+    @apply transition-all duration-200;
+  }
+
+  .admin-sidebar.collapsed .admin-sidebar-logo {
+    @apply w-8 h-8;
+  }
+
+  .admin-sidebar-nav {
+    @apply flex flex-col gap-1 p-3;
+    @apply overflow-y-auto;
+    height: calc(100vh - 80px);
+  }
+.admin-sidebar-nav-item  {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-md;
+    @apply text-sm font-medium;
+    @apply transition-all duration-200;
+    @apply cursor-pointer;
+  }
+
+  .admin-sidebar-nav-item:hover {
+    @apply bg-muted text-foreground;
+    transform: scale(1.02);
+  }
+
+  .admin-sidebar-nav-item.active {
+    @apply bg-primary text-primary-foreground;
+  }
+
+  .admin-sidebar.collapsed .admin-sidebar-nav-item {
+    @apply justify-center px-2;
+  }
+
+  .admin-sidebar.collapsed .admin-sidebar-nav-item span {
+    @apply hidden;
+  }
+
+  /* Conversation Quick Actions Styles */
+  .conversation-quick-actions {
+    @apply fixed bottom-20 left-0 right-0 z-30;
+    @apply px-4 py-3;
+    @apply bg-gradient-to-t from-background via-background to-transparent;
+  }
+
+  .conversation-quick-actions-container {
+    @apply flex gap-2 overflow-x-auto pb-2;
+    @apply scrollbar-hide;
+    scroll-behavior: smooth;
+  }
+
+  .conversation-quick-action-chip {
+    @apply flex-shrink-0 px-4 py-2 rounded-full;
+    @apply bg-card border border-border;
+    @apply text-sm font-medium text-foreground;
+    @apply transition-all duration-200;
+    @apply cursor-pointer;
+    @apply whitespace-nowrap;
+  }
+.conversation-quick-action-chip:hover  {
+    
+    transform: scale(1.02);
+  }
+
+  .conversation-quick-action-chip:active {
+    transform: scale(0.98);
+  }
+
+  /* Administrative Context Header Styles */
+.admin-context-header  {
+    @apply sticky top-0 z-40;
+    @apply backdrop-blur-sm;
+    @apply border-b border-border;
+    @apply px-6 py-4;
+    box-shadow: 0 1px 3px rgba(45, 90, 39, 0.1);
+  }
+
+  .admin-context-header-content {
+    @apply flex items-center justify-between;
+  }
+
+  .admin-context-breadcrumb {
+    @apply flex items-center gap-2 text-sm;
+  }
+
+  .admin-context-breadcrumb-item {
+    @apply text-muted-foreground transition-colors duration-200;
+  }
+
+  .admin-context-breadcrumb-item:hover {
+    @apply text-foreground;
+  }
+.admin-context-breadcrumb-separator  {
+    
+  }
+
+  .admin-context-status {
+    @apply flex items-center gap-4;
+  }
+
+  /* Main Content Layout */
+  .main-content {
+    @apply min-h-screen;
+  }
+
+  .main-content.with-customer-bar {
+    @apply pt-16;
+  }
+
+  .main-content.with-admin-sidebar {
+    @apply ml-[280px];
+  }
+
+  .main-content.with-admin-sidebar.collapsed {
+    @apply ml-[80px];
+  }
+
+  .main-content.with-admin-header {
+    @apply pt-20;
+  }
+
+  /* Mobile Responsive Adjustments */
+  @media (max-width: 1024px) {
+    .admin-sidebar {
+      @apply -translate-x-full;
+    }
+
+    .admin-sidebar.open {
+      @apply translate-x-0;
+    }
+
+    .main-content.with-admin-sidebar {
+      @apply ml-0;
+    }
+
+    .conversation-quick-actions {
+      @apply bottom-24;
+    }
+  }
+
+  /* Animation Utilities */
+  @keyframes typewriter {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+
+  @keyframes pulse-subtle {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  .animate-typewriter {
+    animation: typewriter 2s steps(40) 1s forwards;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 1.5s ease-in-out infinite;
+  }
+
+  /* Scrollbar Utilities */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Touch Target Optimization */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Focus Visible Styles */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+}
+
+@layer utilities {
+  /* Warm Shadow Utilities */
+  .shadow-warm-sm {
+    box-shadow: 0 1px 2px rgba(45, 90, 39, 0.05);
+  }
+
+  .shadow-warm {
+    box-shadow: 0 1px 3px rgba(45, 90, 39, 0.1);
+  }
+
+  .shadow-warm-md {
+    box-shadow: 0 4px 6px rgba(45, 90, 39, 0.1);
+  }
+
+  .shadow-warm-lg {
+    box-shadow: 0 10px 15px rgba(45, 90, 39, 0.1);
+  }
+
+  .shadow-warm-xl {
+    box-shadow: 0 20px 25px rgba(45, 90, 39, 0.1);
+  }
+
+  /* Spring Animation Utility */
+  .spring-bounce {
+    transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
