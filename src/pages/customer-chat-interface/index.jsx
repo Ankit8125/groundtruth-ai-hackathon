@@ -90,6 +90,16 @@ const CustomerChatInterface = () => {
       type: 'text'
     });
 
+    // Check for escalation triggers
+    const escalationKeywords = ['human', 'agent', 'supervisor', 'manager', 'person', 'representative'];
+    const shouldEscalate = escalationKeywords.some(keyword => messageText.toLowerCase().includes(keyword));
+
+    if (shouldEscalate) {
+      updateConversation(conversationId, {
+        status: 'escalated'
+      });
+    }
+
     setIsTyping(true);
 
     try {

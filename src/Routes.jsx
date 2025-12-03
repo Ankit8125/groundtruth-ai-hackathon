@@ -6,6 +6,7 @@ import NotFound from "./pages/NotFound";
 import ChatLogViewer from './pages/chat-log-viewer';
 import CustomerChatInterface from './pages/customer-chat-interface';
 import AdminDashboard from './pages/admin-dashboard';
+import PIIConfiguration from './pages/pii-configuration';
 
 const Routes = () => {
   return (
@@ -17,6 +18,7 @@ const Routes = () => {
         <Route path="/" element={<CustomerChatInterface />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/chat-log-viewer" element={<ChatLogViewer />} />
+        <Route path="/pii-configuration" element={<PIIConfiguration />} />
         <Route path="/customer-chat-interface" element={<CustomerChatInterface />} />
         <Route path="*" element={<NotFound />} />
       </RouterRoutes>

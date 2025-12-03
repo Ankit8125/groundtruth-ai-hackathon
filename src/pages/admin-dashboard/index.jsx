@@ -106,7 +106,7 @@ const AdminDashboard = () => {
         handleExportData();
         break;
       case 'configure_pii': 
-        alert('PII Configuration settings are coming soon!');
+        navigate('/pii-configuration');
         break;
       case 'system_health': 
         alert('Detailed system health diagnostics are coming soon!');
@@ -217,6 +217,8 @@ const AdminDashboard = () => {
               <PIIMaskingControlCard
                 piiMetrics={piiMetrics}
                 isLoading={isLoading}
+                onViewLogs={() => navigate('/chat-log-viewer')}
+                onConfigureRules={() => navigate('/pii-configuration')}
               />
             </div>
 
@@ -252,7 +254,7 @@ const AdminDashboard = () => {
               variant="outline"
               className="h-auto py-4 flex-col"
               iconName="Settings"
-              onClick={() => alert('PII Configuration settings are coming soon!')}
+              onClick={() => navigate('/pii-configuration')}
             >
               <span className="font-semibold mb-1">PII Configuration</span>
               <span className="text-xs text-muted-foreground">

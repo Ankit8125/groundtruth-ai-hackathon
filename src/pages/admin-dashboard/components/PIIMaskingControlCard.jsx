@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 
-const PIIMaskingControlCard = ({ piiMetrics, isLoading }) => {
+const PIIMaskingControlCard = ({ piiMetrics, isLoading, onViewLogs, onConfigureRules }) => {
   return (
     <div className="bg-card border border-border rounded-lg p-6">
       <div className="flex items-center justify-between mb-4">
@@ -62,10 +62,22 @@ const PIIMaskingControlCard = ({ piiMetrics, isLoading }) => {
       </div>
 
       <div className="flex gap-2">
-        <Button variant="outline" size="sm" iconName="Eye" className="flex-1">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          iconName="Eye" 
+          className="flex-1"
+          onClick={onViewLogs}
+        >
           View Logs
         </Button>
-        <Button variant="default" size="sm" iconName="Settings" className="flex-1">
+        <Button 
+          variant="default" 
+          size="sm" 
+          iconName="Settings" 
+          className="flex-1"
+          onClick={onConfigureRules}
+        >
           Configure Rules
         </Button>
       </div>

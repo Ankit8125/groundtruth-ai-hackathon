@@ -1,6 +1,7 @@
 import genAI from '../utils/geminiClient';
 import { getFormattedCustomerContext } from '../data/customerHistory';
 import { maskPII } from '../utils/piiMasking';
+import { getPIIConfig } from './piiConfigService';
 
 /**
  * Safety settings for content filtering.
@@ -71,8 +72,11 @@ export async function generateChatResponse(userMessage, conversationHistory = []
       throw new Error('Please provide a message.');
     }
 
+    // Get PII configuration
+    const piiConfig = getPIIConfig();
+
     // Mask PII in user message before sending to AI
-    const { maskedText, detectedPII } = maskPII(userMessage);
+    const { maskedText, detectedPII } = maskPII(userMessage, piiConfig);
 
     const model = genAI?.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
@@ -87,7 +91,7 @@ export async function generateChatResponse(userMessage, conversationHistory = []
       role: msg?.sender === 'user' ? 'user' : 'model',
       parts: [{ 
         text: msg?.sender === 'user' && msg?.content 
-          ? maskPII(msg?.content)?.maskedText 
+          ? maskPII(msg?.content, piiConfig)?.maskedText 
           : (msg?.content || '') 
       }]
     })) || [];
@@ -142,8 +146,11 @@ export async function streamChatResponse(userMessage, conversationHistory = [], 
       throw new Error('Please provide a message.');
     }
 
+    // Get PII configuration
+    const piiConfig = getPIIConfig();
+
     // Mask PII in user message before sending to AI
-    const { maskedText, detectedPII } = maskPII(userMessage);
+    const { maskedText, detectedPII } = maskPII(userMessage, piiConfig);
 
     const model = genAI?.getGenerativeModel({ 
       model: 'gemini-2.5-flash',
@@ -158,7 +165,7 @@ export async function streamChatResponse(userMessage, conversationHistory = [], 
       role: msg?.sender === 'user' ? 'user' : 'model',
       parts: [{ 
         text: msg?.sender === 'user' && msg?.content 
-          ? maskPII(msg?.content)?.maskedText 
+          ? maskPII(msg?.content, piiConfig)?.maskedText 
           : (msg?.content || '') 
       }]
     })) || [];
