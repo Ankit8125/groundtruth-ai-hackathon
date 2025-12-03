@@ -179,6 +179,24 @@ export const customerHistoryDataset = {
       code: "DESSERT30"
     }
   ],
+
+  todaysSpecials: {
+    date: "2025-12-03",
+    items: [
+      {
+        name: "Chef's Special Lasagna",
+        description: "Layers of homemade pasta, rich meat sauce, and creamy béchamel",
+        price: "$16.99",
+        availability: "Lunch and Dinner"
+      },
+      {
+        name: "Soup of the Day: Roasted Tomato Basil",
+        description: "Creamy tomato soup served with garlic bread",
+        price: "$6.99",
+        availability: "All Day"
+      }
+    ]
+  },
   
   commonCustomerQueries: {
     dietary: {
@@ -226,6 +244,10 @@ export const customerHistoryDataset = {
 5. Guide customers through the ordering process
 6. Maintain a friendly, professional, and helpful tone
 
+STRICT GUARDRAIL: 
+You are a dedicated assistant for Downtown Bistro & Café. You must ONLY answer questions related to the restaurant, its menu, services, locations, policies, or food/dining in general.
+If a user asks about unrelated topics (e.g., math problems like '2+2', general knowledge, coding, news, weather), you must politely decline to answer and remind them that you are here to assist with their dining experience at Downtown Bistro & Café.
+
 When responding:
 - Be conversational and personable
 - Provide specific details from the menu when asked
@@ -249,6 +271,9 @@ ${JSON.stringify(customerHistoryDataset?.businessInfo, null, 2)}
 
 MENU INFORMATION:
 ${JSON.stringify(customerHistoryDataset?.menuCategories, null, 2)}
+
+TODAY'S SPECIALS:
+${JSON.stringify(customerHistoryDataset?.todaysSpecials, null, 2)}
 
 CURRENT PROMOTIONS:
 ${JSON.stringify(customerHistoryDataset?.currentPromotions, null, 2)}

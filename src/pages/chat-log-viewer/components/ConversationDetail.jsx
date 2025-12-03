@@ -1,10 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
 import MessageBubble from './MessageBubble';
 import ConversationAnalytics from './ConversationAnalytics';
+import { analyzeConversation } from '../../../services/geminiService';
 
 const ConversationDetail = ({ conversation, onClose }) => {
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  useEffect(() => {
+    if (conversation) {
+      // If conversation already has analytics, use it
+      if (conversation.analytics) {
+        setAnalyticsData(conversation.analytics);
+      } else {
+        // Otherwise, analyze it using Gemini
+        analyzeWithGemini();
+      }
+    } else {
+      setAnalyticsData(null);
+    }
+  }, [conversation]);
+
+  const analyzeWithGemini = async () => {
+    if (!conversation?.messages || conversation.messages.length === 0) return;
+    
+    setIsAnalyzing(true);
+    try {
+      const result = await analyzeConversation(conversation.messages);
+      if (result) {
+        // Merge with existing basic stats if available, or create new structure
+        setAnalyticsData({
+          ...result,
+          messageCount: conversation.messages.length,
+          // Add default values for fields expected by the UI if missing
+          accuracy: result.agentPerformance === 'Good' ? 95 : 75,
+          sentimentScore: result.sentiment === 'Positive' ? 90 : (result.sentiment === 'Negative' ? 30 : 60),
+          escalations: result.resolutionStatus === 'Escalated' ? 1 : 0,
+          avgResponseTime: '2s' // Placeholder
+        });
+      }
+    } catch (error) {
+      console.error("Failed to analyze conversation:", error);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
   if (!conversation) {
     return (
       <div className="flex items-center justify-center h-full bg-background rounded-lg border border-border">
@@ -88,7 +131,7 @@ const ConversationDetail = ({ conversation, onClose }) => {
           ))}
         </div>
 
-        <ConversationAnalytics analytics={conversation?.analytics} />
+        <ConversationAnalytics analytics={analyticsData} isLoading={isAnalyzing} />
       </div>
       <div className="p-4 border-t border-border bg-card">
         <div className="flex items-center gap-2">

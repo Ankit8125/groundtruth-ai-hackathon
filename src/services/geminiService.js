@@ -255,5 +255,67 @@ export default {
   generateChatResponse,
   streamChatResponse,
   analyzeUserIntent,
+  analyzeConversation,
   handleGeminiError
 };
+
+/**
+ * Analyzes a full conversation to extract insights, sentiment, and summary.
+ * @param {Array} messages - The conversation messages.
+ * @returns {Promise<Object>} Detailed conversation analysis.
+ */
+export async function analyzeConversation(messages) {
+  try {
+    if (!messages || messages.length === 0) {
+      return null;
+    }
+
+    const model = genAI?.getGenerativeModel({ model: 'gemini-2.5-flash' });
+
+    // Format conversation for the prompt
+    const conversationText = messages.map(msg => 
+      `${msg.sender}: ${msg.content}`
+    ).join('\n');
+
+    const prompt = `Analyze the following customer service conversation and provide a detailed analysis in JSON format.
+
+Conversation:
+${conversationText}
+
+Please provide the following fields in your JSON response:
+1. "sentiment": Overall sentiment (Positive, Neutral, Negative).
+2. "topics": Array of main topics discussed (e.g., "Menu Inquiry", "Complaint", "Order Status").
+3. "resolutionStatus": "Resolved", "Unresolved", or "Escalated".
+4. "summary": A brief 1-2 sentence summary of the interaction.
+5. "customerIntent": The primary goal of the customer.
+6. "agentPerformance": A brief assessment of how the AI agent handled the query (Good, Needs Improvement).
+
+Return ONLY the JSON object.`;
+
+    const result = await model?.generateContent(prompt);
+    const response = await result?.response;
+    const text = response?.text();
+    
+    // Try to parse JSON from response
+    try {
+      const jsonMatch = text?.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return JSON.parse(jsonMatch?.[0]);
+      }
+    } catch (parseError) {
+      console.error('Error parsing conversation analysis JSON:', parseError);
+    }
+    
+    return {
+      sentiment: 'Neutral',
+      topics: ['General'],
+      resolutionStatus: 'Unresolved',
+      summary: 'Could not analyze conversation.',
+      customerIntent: 'Unknown',
+      agentPerformance: 'Unknown'
+    };
+  } catch (error) {
+    console.error('Error in conversation analysis:', error);
+    return null;
+  }
+}

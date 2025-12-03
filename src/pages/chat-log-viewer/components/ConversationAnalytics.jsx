@@ -1,7 +1,20 @@
 import React from 'react';
 import Icon from '../../../components/AppIcon';
 
-const ConversationAnalytics = ({ analytics }) => {
+const ConversationAnalytics = ({ analytics, isLoading }) => {
+  if (isLoading) {
+    return (
+      <div className="bg-card border border-border rounded-lg p-6 flex items-center justify-center min-h-[200px]">
+        <div className="flex flex-col items-center gap-2">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <span className="text-muted-foreground text-sm">Analyzing conversation with AI...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!analytics) return null;
+
   const getAccuracyColor = (accuracy) => {
     if (accuracy >= 90) return 'text-success';
     if (accuracy >= 70) return 'text-warning';
@@ -9,16 +22,11 @@ const ConversationAnalytics = ({ analytics }) => {
   };
 
   const getSentimentIcon = (sentiment) => {
-    switch (sentiment) {
-      case 'positive':
-        return { name: 'Smile', color: 'var(--color-success)' };
-      case 'neutral':
-        return { name: 'Meh', color: 'var(--color-warning)' };
-      case 'negative':
-        return { name: 'Frown', color: 'var(--color-error)' };
-      default:
-        return { name: 'HelpCircle', color: 'var(--color-muted-foreground)' };
-    }
+    const s = sentiment?.toLowerCase();
+    if (s === 'positive') return { name: 'Smile', color: 'var(--color-success)' };
+    if (s === 'neutral') return { name: 'Meh', color: 'var(--color-warning)' };
+    if (s === 'negative') return { name: 'Frown', color: 'var(--color-error)' };
+    return { name: 'HelpCircle', color: 'var(--color-muted-foreground)' };
   };
 
   const sentimentIcon = getSentimentIcon(analytics?.sentiment);
@@ -29,28 +37,46 @@ const ConversationAnalytics = ({ analytics }) => {
         <Icon name="BarChart3" size={20} color="var(--color-primary)" />
         Conversation Analytics
       </h3>
+      
+      {/* Summary Section */}
+      {analytics?.summary && (
+        <div className="mb-6 bg-background rounded-lg p-4 border border-border/50">
+          <div className="flex items-center gap-2 mb-2">
+            <Icon name="FileText" size={16} className="text-primary" />
+            <span className="text-sm font-medium text-foreground">AI Summary</span>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {analytics.summary}
+          </p>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {/* Agent Performance / Accuracy */}
         <div className="bg-background rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-muted-foreground">Response Accuracy</span>
+            <span className="text-sm text-muted-foreground">Agent Performance</span>
             <Icon name="Target" size={16} className="text-muted-foreground" />
           </div>
-          <div className={`text-2xl font-bold ${getAccuracyColor(analytics?.accuracy)}`}>
-            {analytics?.accuracy}%
+          <div className={`text-lg font-bold ${analytics?.agentPerformance === 'Good' ? 'text-success' : 'text-warning'}`}>
+            {analytics?.agentPerformance || `${analytics?.accuracy}%`}
           </div>
-          <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
-            <div
-              className={`h-full ${
-                analytics?.accuracy >= 90
-                  ? 'bg-success'
-                  : analytics?.accuracy >= 70
-                  ? 'bg-warning' :'bg-error'
-              }`}
-              style={{ width: `${analytics?.accuracy}%` }}
-            />
-          </div>
+          {analytics?.accuracy && (
+            <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
+              <div
+                className={`h-full ${
+                  analytics?.accuracy >= 90
+                    ? 'bg-success'
+                    : analytics?.accuracy >= 70
+                    ? 'bg-warning' :'bg-error'
+                }`}
+                style={{ width: `${analytics?.accuracy}%` }}
+              />
+            </div>
+          )}
         </div>
 
+        {/* Sentiment */}
         <div className="bg-background rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-muted-foreground">Customer Sentiment</span>
@@ -64,28 +90,35 @@ const ConversationAnalytics = ({ analytics }) => {
           </div>
         </div>
 
+        {/* Intent */}
         <div className="bg-background rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-muted-foreground">Total Messages</span>
-            <Icon name="MessageSquare" size={16} className="text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Primary Intent</span>
+            <Icon name="Compass" size={16} className="text-muted-foreground" />
           </div>
-          <div className="text-2xl font-bold text-foreground">{analytics?.messageCount}</div>
+          <div className="text-lg font-bold text-foreground capitalize truncate" title={analytics?.customerIntent}>
+            {analytics?.customerIntent || 'Unknown'}
+          </div>
           <div className="text-xs text-muted-foreground mt-1">
-            Avg response: {analytics?.avgResponseTime}
+            {analytics?.messageCount} messages
           </div>
         </div>
 
+        {/* Resolution Status */}
         <div className="bg-background rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-muted-foreground">Escalations</span>
-            <Icon name="AlertTriangle" size={16} className="text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Status</span>
+            <Icon name={analytics?.resolutionStatus === 'Resolved' ? 'CheckCircle' : 'AlertTriangle'} size={16} className="text-muted-foreground" />
           </div>
-          <div className="text-2xl font-bold text-foreground">{analytics?.escalations}</div>
+          <div className={`text-lg font-bold ${analytics?.resolutionStatus === 'Resolved' ? 'text-success' : 'text-warning'}`}>
+            {analytics?.resolutionStatus || (analytics?.escalations === 0 ? 'Resolved' : 'Escalated')}
+          </div>
           <div className="text-xs text-muted-foreground mt-1">
-            {analytics?.escalations === 0 ? 'Fully resolved' : 'Required intervention'}
+            {analytics?.escalations > 0 ? `${analytics.escalations} escalations` : 'No issues'}
           </div>
         </div>
       </div>
+
       <div className="space-y-3">
         <div>
           <div className="flex items-center justify-between mb-2">

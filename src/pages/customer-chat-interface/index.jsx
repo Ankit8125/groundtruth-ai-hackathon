@@ -11,7 +11,8 @@ import {
   createConversation, 
   storeMessage, 
   updateConversation,
-  recordPIIDetection 
+  recordPIIDetection,
+  getConversation
 } from '../../services/chatStorageService';
 
 const CustomerChatInterface = () => {
@@ -24,24 +25,39 @@ const CustomerChatInterface = () => {
   const chatContainerRef = useRef(null);
   const currentStreamRef = useRef('');
 
-  // Create conversation on mount
+  // Initialize conversation (restore or create new)
   useEffect(() => {
+    const activeId = localStorage.getItem('activeConversationId');
+    
+    if (activeId) {
+      const existingConv = getConversation(activeId);
+      if (existingConv && existingConv.status === 'active') {
+        setConversationId(activeId);
+        // Restore messages
+        if (existingConv.messages) {
+          setMessages(existingConv.messages.map(msg => ({
+            ...msg,
+            id: msg.id || Date.now() + Math.random(), // Ensure ID exists
+            timestamp: new Date(msg.timestamp)
+          })));
+        }
+        return;
+      }
+    }
+
+    // If no active conversation found, create new one
+    startNewConversation();
+  }, []);
+
+  const startNewConversation = () => {
     const newConversationId = createConversation({
       outlet: 'Online Chat',
       customerId: `CUST-****${Math.floor(Math.random() * 10000)}`
     });
     setConversationId(newConversationId);
-
-    // Update conversation status when component unmounts
-    return () => {
-      if (newConversationId) {
-        updateConversation(newConversationId, {
-          status: 'completed',
-          endTime: new Date()?.toISOString()
-        });
-      }
-    };
-  }, []);
+    localStorage.setItem('activeConversationId', newConversationId);
+    setMessages([]);
+  };
 
   const scrollToBottom = () => {
     messagesEndRef?.current?.scrollIntoView({ behavior: 'smooth' });
@@ -171,31 +187,29 @@ const CustomerChatInterface = () => {
     handleSendMessage(message);
   };
 
-  const handleClearChat = () => {
-    if (window.confirm('Are you sure you want to clear the chat history?')) {
-      setMessages([]);
-      setError(null);
-      
-      // Create new conversation
-      if (conversationId) {
-        updateConversation(conversationId, {
-          status: 'cleared',
-          endTime: new Date()?.toISOString()
-        });
-      }
-      const newConversationId = createConversation({
-        outlet: 'Online Chat',
-        customerId: `CUST-****${Math.floor(Math.random() * 10000)}`
-      });
-      setConversationId(newConversationId);
+  const handleNewChat = () => {
+    if (messages.length > 0 && !window.confirm('Start a new conversation? Current chat history will be saved.')) {
+      return;
     }
+    
+    // Mark current conversation as completed
+    if (conversationId) {
+      updateConversation(conversationId, {
+        status: 'completed',
+        endTime: new Date()?.toISOString()
+      });
+    }
+    
+    // Clear active conversation ID and start new
+    localStorage.removeItem('activeConversationId');
+    startNewConversation();
   };
 
   return (
     <div className="min-h-screen bg-background">
       <CustomerContextBar />
       <div className="main-content with-customer-bar">
-        <ChatHeader onClearChat={handleClearChat} />
+        <ChatHeader onClearChat={handleNewChat} />
 
         <div
           ref={chatContainerRef}

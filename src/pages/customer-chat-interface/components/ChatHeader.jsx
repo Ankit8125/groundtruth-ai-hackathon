@@ -43,12 +43,12 @@ const ChatHeader = ({ onClearChat }) => {
             <Button
               variant="ghost"
               size="sm"
-              iconName="Trash2"
+              iconName="PlusCircle"
               iconSize={18}
               onClick={onClearChat}
               className="touch-target"
             >
-              <span className="hidden sm:inline">Clear</span>
+              <span className="hidden sm:inline">New Chat</span>
             </Button>
           </div>
         </div>

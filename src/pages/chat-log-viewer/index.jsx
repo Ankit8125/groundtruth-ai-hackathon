@@ -199,7 +199,7 @@ const ChatLogViewer = () => {
             )}
 
             <div className={showFilters ? 'lg:col-span-4' : 'lg:col-span-5'}>
-              <div className="space-y-3">
+              <div className="space-y-3 max-h-[calc(100vh-250px)] overflow-y-auto pr-2 custom-scrollbar">
                 {filteredConversations?.length === 0 ? (
                   <div className="bg-card border border-border rounded-lg p-8 text-center">
                     <Icon name="Search" size={48} className="text-muted-foreground mx-auto mb-4" />

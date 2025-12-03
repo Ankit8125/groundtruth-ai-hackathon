@@ -10,40 +10,16 @@ const AdministrativeSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
 
   const navigationItems = [
     {
+      label: 'Dashboard',
+      icon: 'LayoutDashboard',
+      path: '/admin-dashboard',
+      description: 'System overview'
+    },
+    {
       label: 'Chat Logs',
       icon: 'MessageSquare',
       path: '/chat-log-viewer',
       description: 'View conversation history'
-    },
-    {
-      label: 'Dashboard',
-      icon: 'LayoutDashboard',
-      path: '/dashboard',
-      description: 'System overview'
-    },
-    {
-      label: 'Outlets',
-      icon: 'Store',
-      path: '/outlets',
-      description: 'Manage locations'
-    },
-    {
-      label: 'Analytics',
-      icon: 'BarChart3',
-      path: '/analytics',
-      description: 'Performance metrics'
-    },
-    {
-      label: 'Customers',
-      icon: 'Users',
-      path: '/customers',
-      description: 'Customer management'
-    },
-    {
-      label: 'Settings',
-      icon: 'Settings',
-      path: '/settings',
-      description: 'System configuration'
     }
   ];
 

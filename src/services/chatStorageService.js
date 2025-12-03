@@ -4,9 +4,40 @@
  * for admin dashboard and training purposes
  */
 
-// In-memory storage (in production, this would be a database)
+const STORAGE_KEY = 'groundtruth_ai_chat_storage_v2';
+
+// Initialize storage from localStorage if available
 let chatStorage = [];
 let conversationIdCounter = 1;
+
+try {
+  const storedData = localStorage.getItem(STORAGE_KEY);
+  if (storedData) {
+    chatStorage = JSON.parse(storedData);
+    // Update counter based on existing IDs to avoid collisions
+    if (chatStorage.length > 0) {
+      const maxId = chatStorage.reduce((max, conv) => {
+        const idNum = parseInt(conv.id.split('-').pop(), 10);
+        return isNaN(idNum) ? max : Math.max(max, idNum);
+      }, 0);
+      conversationIdCounter = maxId + 1;
+    }
+  }
+} catch (error) {
+  console.error('Failed to load chat storage from localStorage:', error);
+  chatStorage = [];
+}
+
+/**
+ * Helper to save current state to localStorage
+ */
+function persistStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(chatStorage));
+  } catch (error) {
+    console.error('Failed to save chat storage to localStorage:', error);
+  }
+}
 
 /**
  * Stores a complete chat conversation
@@ -21,6 +52,7 @@ export function storeConversation(conversation) {
   };
 
   chatStorage?.push(storedConversation);
+  persistStorage();
   return storedConversation;
 }
 
@@ -40,6 +72,7 @@ export function storeMessage(conversationId, message) {
       ...message,
       timestamp: new Date()?.toISOString()
     });
+    persistStorage();
   }
 }
 
@@ -61,6 +94,7 @@ export function createConversation(metadata = {}) {
     piiDetections: [],
     ...metadata
   });
+  persistStorage();
 
   return conversationId;
 }
@@ -76,6 +110,7 @@ export function updateConversation(conversationId, updates) {
   if (conversation) {
     Object.assign(conversation, updates);
     conversation.lastUpdated = new Date()?.toISOString();
+    persistStorage();
   }
 }
 
@@ -95,6 +130,7 @@ export function recordPIIDetection(conversationId, piiDetection) {
       ...piiDetection,
       timestamp: new Date()?.toISOString()
     });
+    persistStorage();
   }
 }
 
@@ -240,6 +276,7 @@ export function exportForTraining(filters = {}) {
 export function clearAllConversations() {
   chatStorage = [];
   conversationIdCounter = 1;
+  persistStorage();
 }
 
 export default {

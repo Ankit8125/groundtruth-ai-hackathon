@@ -20,7 +20,7 @@ const AdministrativeContextHeader = () => {
 
   const getBreadcrumbs = () => {
     const pathSegments = location?.pathname?.split('/')?.filter(Boolean);
-    const breadcrumbs = [{ label: 'Dashboard', path: '/dashboard' }];
+    const breadcrumbs = [{ label: 'Dashboard', path: '/admin-dashboard' }];
 
     pathSegments?.forEach((segment, index) => {
       const path = `/${pathSegments?.slice(0, index + 1)?.join('/')}`;

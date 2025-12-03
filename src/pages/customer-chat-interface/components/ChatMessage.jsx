@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from '../../../components/AppImage';
 import Icon from '../../../components/AppIcon';
 
 const ChatMessage = ({ message, isStreaming = false }) => {
   const isUser = message?.sender === 'user';
   const isAI = message?.sender === 'ai';
+  const [rating, setRating] = useState(null);
+
+  const handleRate = (value) => {
+    setRating(value);
+    // In a real app, you would send this rating to the backend here
+    console.log(`Message ${message?.id} rated: ${value}`);
+  };
 
   const formatTimestamp = (timestamp) => {
     const date = new Date(timestamp);
@@ -144,7 +151,7 @@ const ChatMessage = ({ message, isStreaming = false }) => {
   };
 
   return (
-    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+    <div className={`flex gap-3 group ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
       <div className="flex-shrink-0">
         {isAI ? (
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -164,9 +171,29 @@ const ChatMessage = ({ message, isStreaming = false }) => {
         }`}>
           {renderMessageContent()}
         </div>
-        <span className="text-xs text-muted-foreground px-2">
-          {formatTimestamp(message?.timestamp)}
-        </span>
+        <div className="flex items-center justify-between px-2 w-full">
+          <span className="text-xs text-muted-foreground">
+            {formatTimestamp(message?.timestamp)}
+          </span>
+          {isAI && !isStreaming && (
+            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ opacity: rating ? 1 : undefined }}>
+              <button 
+                onClick={() => handleRate('up')}
+                className={`p-1 rounded hover:bg-muted transition-colors ${rating === 'up' ? 'text-success' : 'text-muted-foreground'}`}
+                title="Helpful"
+              >
+                <Icon name="ThumbsUp" size={14} />
+              </button>
+              <button 
+                onClick={() => handleRate('down')}
+                className={`p-1 rounded hover:bg-muted transition-colors ${rating === 'down' ? 'text-error' : 'text-muted-foreground'}`}
+                title="Not helpful"
+              >
+                <Icon name="ThumbsDown" size={14} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

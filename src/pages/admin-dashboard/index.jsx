@@ -105,9 +105,11 @@ const AdminDashboard = () => {
       case 'export_data':
         handleExportData();
         break;
-      case 'configure_pii': navigate('/admin-dashboard/pii-settings');
+      case 'configure_pii': 
+        alert('PII Configuration settings are coming soon!');
         break;
-      case 'system_health': navigate('/admin-dashboard/system-health');
+      case 'system_health': 
+        alert('Detailed system health diagnostics are coming soon!');
         break;
       default:
         console.log('Action not implemented:', action);
@@ -250,7 +252,7 @@ const AdminDashboard = () => {
               variant="outline"
               className="h-auto py-4 flex-col"
               iconName="Settings"
-              onClick={() => navigate('/admin-dashboard/pii-settings')}
+              onClick={() => alert('PII Configuration settings are coming soon!')}
             >
               <span className="font-semibold mb-1">PII Configuration</span>
               <span className="text-xs text-muted-foreground">
