@@ -8,6 +8,7 @@ import { analyzeConversation } from '../../../services/geminiService';
 const ConversationDetail = ({ conversation, onClose }) => {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [activeTab, setActiveTab] = useState('transcript');
 
   useEffect(() => {
     if (conversation) {
@@ -93,45 +94,73 @@ const ConversationDetail = ({ conversation, onClose }) => {
           />
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        <div className="bg-card border border-border rounded-lg p-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div>
-              <span className="text-xs text-muted-foreground block mb-1">Duration</span>
-              <span className="text-sm font-medium text-foreground flex items-center gap-1">
-                <Icon name="Clock" size={14} />
-                {conversation?.duration}
-              </span>
-            </div>
-            <div>
-              <span className="text-xs text-muted-foreground block mb-1">Status</span>
-              <span className="text-sm font-medium text-foreground capitalize">
-                {conversation?.status}
-              </span>
-            </div>
-            <div>
-              <span className="text-xs text-muted-foreground block mb-1">Satisfaction</span>
-              <span className="text-sm font-medium text-foreground flex items-center gap-1">
-                <Icon name="Star" size={14} className="text-warning" />
-                {conversation?.satisfactionRating}/5
-              </span>
-            </div>
-            <div>
-              <span className="text-xs text-muted-foreground block mb-1">Messages</span>
-              <span className="text-sm font-medium text-foreground">
-                {conversation?.messages?.length}
-              </span>
-            </div>
-          </div>
-        </div>
 
-        <div className="space-y-2">
-          {conversation?.messages?.map((message) => (
-            <MessageBubble key={message?.id} message={message} />
-          ))}
-        </div>
+      <div className="flex items-center border-b border-border bg-card px-4">
+        <button
+          className={`py-3 px-4 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === 'transcript'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+          onClick={() => setActiveTab('transcript')}
+        >
+          Transcript
+        </button>
+        <button
+          className={`py-3 px-4 text-sm font-medium border-b-2 transition-colors ${
+            activeTab === 'analytics'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-muted-foreground hover:text-foreground'
+          }`}
+          onClick={() => setActiveTab('analytics')}
+        >
+          Analytics
+        </button>
+      </div>
 
-        <ConversationAnalytics analytics={analyticsData} isLoading={isAnalyzing} />
+      <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+        {activeTab === 'transcript' ? (
+          <>
+            <div className="bg-card border border-border rounded-lg p-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <span className="text-xs text-muted-foreground block mb-1">Duration</span>
+                  <span className="text-sm font-medium text-foreground flex items-center gap-1">
+                    <Icon name="Clock" size={14} />
+                    {conversation?.duration}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-xs text-muted-foreground block mb-1">Status</span>
+                  <span className="text-sm font-medium text-foreground capitalize">
+                    {conversation?.status}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-xs text-muted-foreground block mb-1">Satisfaction</span>
+                  <span className="text-sm font-medium text-foreground flex items-center gap-1">
+                    <Icon name="Star" size={14} className="text-warning" />
+                    {conversation?.satisfactionRating}/5
+                  </span>
+                </div>
+                <div>
+                  <span className="text-xs text-muted-foreground block mb-1">Messages</span>
+                  <span className="text-sm font-medium text-foreground">
+                    {conversation?.messages?.length}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              {conversation?.messages?.map((message) => (
+                <MessageBubble key={message?.id} message={message} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <ConversationAnalytics analytics={analyticsData} isLoading={isAnalyzing} />
+        )}
       </div>
       <div className="p-4 border-t border-border bg-card">
         <div className="flex items-center gap-2">
