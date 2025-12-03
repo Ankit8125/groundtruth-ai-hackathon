@@ -4,7 +4,7 @@ import AdministrativeSidebar from '../../components/AdministrativeSidebar';
 import AdministrativeContextHeader from '../../components/AdministrativeContextHeader';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
-import Checkbox from '../../components/ui/Checkbox';
+import { Checkbox } from '../../components/ui/Checkbox';
 import { getPIIConfig, savePIIConfig, resetPIIConfig } from '../../services/piiConfigService';
 
 const PIIConfiguration = () => {

@@ -4,6 +4,7 @@ import Button from '../../../components/ui/Button';
 import MessageBubble from './MessageBubble';
 import ConversationAnalytics from './ConversationAnalytics';
 import { analyzeConversation } from '../../../services/geminiService';
+import { addNotification } from '../../../services/notificationService';
 
 const ConversationDetail = ({ conversation, onClose }) => {
   const [analyticsData, setAnalyticsData] = useState(null);
@@ -47,6 +48,32 @@ const ConversationDetail = ({ conversation, onClose }) => {
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const handleFlag = () => {
+    addNotification({
+      title: 'Conversation Flagged',
+      message: `Conversation ${conversation.id || 'unknown'} flagged for review by admin.`,
+      type: 'system'
+    });
+    alert('Conversation flagged for review.');
+  };
+
+  const handleShare = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+      alert('Link copied to clipboard!');
+    });
+  };
+
+  const handleExport = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(conversation, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `conversation_${conversation.id || 'export'}.json`);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
   };
 
   if (!conversation) {
@@ -169,6 +196,7 @@ const ConversationDetail = ({ conversation, onClose }) => {
             size="sm"
             iconName="Flag"
             iconPosition="left"
+            onClick={handleFlag}
           >
             Flag for Review
           </Button>
@@ -177,6 +205,7 @@ const ConversationDetail = ({ conversation, onClose }) => {
             size="sm"
             iconName="Share2"
             iconPosition="left"
+            onClick={handleShare}
           >
             Share
           </Button>
@@ -185,6 +214,7 @@ const ConversationDetail = ({ conversation, onClose }) => {
             size="sm"
             iconName="Download"
             iconPosition="left"
+            onClick={handleExport}
           >
             Export
           </Button>

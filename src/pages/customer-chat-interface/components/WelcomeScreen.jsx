@@ -43,6 +43,13 @@ const WelcomeScreen = ({ onSuggestionClick }) => {
         </p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl">
+        <button
+          onClick={() => onSuggestionClick({ id: 'share_location', title: 'Find Nearest Outlet' })}
+          className="col-span-1 sm:col-span-2 flex items-center justify-center gap-2 p-4 rounded-xl bg-primary/10 border border-primary/20 hover:bg-primary/20 transition-all duration-200 text-primary font-medium mb-2"
+        >
+          <Icon name="MapPin" size={20} />
+          <span>Share Location to Find Nearest Outlet</span>
+        </button>
         {suggestions?.map((suggestion) => (
           <button
             key={suggestion?.id}

@@ -7,6 +7,7 @@ import TypingIndicator from './components/TypingIndicator';
 import MessageInput from './components/MessageInput';
 import WelcomeScreen from './components/WelcomeScreen';
 import { streamChatResponse } from '../../services/geminiService';
+import { addNotification } from '../../services/notificationService';
 import { 
   createConversation, 
   storeMessage, 
@@ -98,6 +99,11 @@ const CustomerChatInterface = () => {
       updateConversation(conversationId, {
         status: 'escalated'
       });
+      addNotification({
+        title: 'Chat Escalated',
+        message: `Conversation ${conversationId} escalated due to keyword trigger.`,
+        type: 'escalation'
+      });
     }
 
     setIsTyping(true);
@@ -186,6 +192,31 @@ const CustomerChatInterface = () => {
   };
 
   const handleSuggestionClick = (suggestion) => {
+    if (suggestion.id === 'share_location') {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            // Store location in conversation metadata
+            if (conversationId) {
+              updateConversation(conversationId, {
+                location: { latitude, longitude },
+                outlet: 'Nearest Outlet (Detected)'
+              });
+            }
+            handleSendMessage(`I'm sharing my location: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          },
+          (error) => {
+            console.log('Location access denied:', error);
+            handleSendMessage("I couldn't share my location. Please help me find a restaurant near me.");
+          }
+        );
+      } else {
+        handleSendMessage("My browser doesn't support location sharing.");
+      }
+      return;
+    }
+
     const suggestionMessages = {
       menu: 'Show me the menu',
       order: 'I want to place an order',
@@ -230,6 +261,14 @@ const CustomerChatInterface = () => {
       updateConversation(conversationId, {
         satisfactionRating: satisfactionScore
       });
+      
+      if (rating === 'down') {
+        addNotification({
+          title: 'Negative Feedback',
+          message: `Customer disliked a response in conversation ${conversationId}.`,
+          type: 'feedback'
+        });
+      }
     }
   };
 

@@ -9,7 +9,7 @@ import SystemHealthCard from './components/SystemHealthCard';
 import PIIMaskingControlCard from './components/PIIMaskingControlCard';
 import QuickActionsPanel from './components/QuickActionsPanel';
 import RecentActivityFeed from './components/RecentActivityFeed';
-import { getChatStatistics, getSystemHealth, getPIIMaskingMetrics } from '../../services/chatStorageService';
+import { getChatStatistics, getSystemHealth, getPIIMaskingMetrics, exportForTraining } from '../../services/chatStorageService';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -117,9 +117,19 @@ const AdminDashboard = () => {
   };
 
   const handleExportData = () => {
-    // Export all chat data
-    console.log('Exporting all chat data...');
-    // This would typically trigger a download or API call
+    try {
+      const data = exportForTraining();
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", `training_data_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    } catch (error) {
+      console.error('Export failed:', error);
+      alert('Failed to export data. Please try again.');
+    }
   };
 
   return (

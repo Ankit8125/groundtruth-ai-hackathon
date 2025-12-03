@@ -94,7 +94,15 @@ const AdministrativeSidebar = ({ isCollapsed = false, onToggleCollapse }) => {
         </nav>
 
         <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-border">
-          <div className={`admin-sidebar-nav-item`}>
+          <div 
+            className={`admin-sidebar-nav-item cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors`}
+            onClick={() => {
+              // Simulate logout
+              if (window.confirm('Are you sure you want to logout?')) {
+                navigate('/');
+              }
+            }}
+          >
             <Icon name="LogOut" size={20} />
             <span>Logout</span>
           </div>
