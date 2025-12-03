@@ -20,12 +20,6 @@ const QuickActionsPanel = ({ onActionClick }) => {
       label: 'Configure PII',
       icon: 'Shield',
       variant: 'outline'
-    },
-    {
-      id: 'system_health',
-      label: 'System Health',
-      icon: 'Activity',
-      variant: 'outline'
     }
   ];
 

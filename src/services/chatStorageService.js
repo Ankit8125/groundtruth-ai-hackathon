@@ -190,10 +190,16 @@ export function getChatStatistics() {
     sum + (c?.messages?.length || 0), 0
   );
 
-  const resolvedChats = chatStorage?.filter(c => c?.status === 'resolved');
-  const avgSatisfaction = resolvedChats?.length > 0
-    ? resolvedChats?.reduce((sum, c) => sum + (c?.satisfactionRating || 0), 0) / resolvedChats?.length
-    : 0;
+  // Include all chats (active, resolved, completed, escalated) for real-time satisfaction score
+  const scorableChats = chatStorage?.filter(c => c?.satisfactionRating !== undefined);
+  
+  const avgSatisfaction = scorableChats?.length > 0
+    ? scorableChats?.reduce((sum, c) => sum + (c?.satisfactionRating || 0), 0) / scorableChats?.length
+    : 0; // Default to 0 if no chats exist
+
+  // If we have chats but the score is 0 (which shouldn't happen with default 5), it means something is wrong.
+  // However, if we have chats, we return the calculated average.
+  // Note: New chats default to 5 (100%). Thumbs down sets it to 1 (20%).
 
   const escalatedChats = chatStorage?.filter(c => c?.status === 'escalated')?.length;
   const escalationRate = chatStorage?.length > 0 
@@ -204,10 +210,10 @@ export function getChatStatistics() {
     totalChats: chatStorage?.length,
     activeChats,
     dailyInteractions: dailyChats?.length,
-    piiMaskingRate: totalMessages > 0 ? (totalPIIDetections / totalMessages) * 100 : 0,
+    piiMaskingRate: totalMessages > 0 ? Math.round((totalPIIDetections / totalMessages) * 100) : 0,
     avgResponseTime: '2.3s',
     escalationRate: Math.round(escalationRate),
-    satisfactionScore: Math.round(avgSatisfaction * 20) // Convert to percentage
+    satisfactionScore: Math.round(avgSatisfaction * 20) // Convert to percentage (5 * 20 = 100%)
   };
 }
 
