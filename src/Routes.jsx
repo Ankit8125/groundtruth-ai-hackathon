@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes as RouterRoutes, Route } from "react-router-dom";
-import ScrollToTop from "components/ScrollToTop";
-import ErrorBoundary from "components/ErrorBoundary";
-import NotFound from "pages/NotFound";
+import ScrollToTop from "./components/ScrollToTop";
+import ErrorBoundary from "./components/ErrorBoundary";
+import NotFound from "./pages/NotFound";
 import ChatLogViewer from './pages/chat-log-viewer';
 import CustomerChatInterface from './pages/customer-chat-interface';
 import AdminDashboard from './pages/admin-dashboard';
